@@ -32,8 +32,8 @@ void PID::UpdateError(double cte) {
    /**
    * TODO: Update PID errors based on cte.
    **/
-   derror = cte - error; 
-   ierror += cte;
+   if (dt > 1e-4) derror = (cte - error)/dt; 
+   ierror += cte * dt;
    error = cte;
 }
 
@@ -54,4 +54,5 @@ double PID::UpdateDeltaTime(double new_delta_time) {
    * TODO: Update the delta time with new value
    */
    dt = new_delta_time;
+   return dt;
 }
