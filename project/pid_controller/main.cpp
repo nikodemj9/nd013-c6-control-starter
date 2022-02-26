@@ -221,8 +221,8 @@ int main ()
 
   // PID parameters for steering
   double steer_p = 0.1;
-  double steer_i = 0.0;
-  double steer_d = 0.0;
+  double steer_i = 0.01;
+  double steer_d = 0.1;
   
   PID pid_steer = PID();
   pid_steer.Init(steer_p, steer_i, steer_d, 1.2, -1.2);
@@ -233,9 +233,9 @@ int main ()
   **/
 
   // PID parameters for throttle
-  double throttle_p = 0.5;
-  double throttle_i = 0.001;
-  double throttle_d = 0.1;
+  double throttle_p = 0.05;
+  double throttle_i = 0.1;
+  double throttle_d = 0.08;
 
   PID pid_throttle = PID();
   pid_throttle.Init(throttle_p, throttle_i, throttle_d, 1.0, -1.0);
@@ -312,7 +312,6 @@ int main ()
           /**
           * TODO (step 3): compute the steer error (error_steer) from the position and the desired trajectory
           **/
-          error_steer = 0;
           auto dx = x_points.back() - x_points.front(); // get trajectory difference in x direction
           auto dy = y_points.back() - y_points.front(); // get trajectory difference in y direction
           auto desired_yaw = std::atan2(dy, dx); // calculate desired yaw angle 
@@ -363,7 +362,6 @@ int main ()
           // Compute control to apply
           pid_throttle.UpdateError(error_throttle);
           double throttle = pid_throttle.TotalError();
-          std::cout << throttle << std::endl;
           // Adapt the negative throttle to break
           if (throttle > 0.0) {
             throttle_output = throttle;
