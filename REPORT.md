@@ -1,16 +1,65 @@
-Plot for steering output and error: 
+# Project Summary
+This project is focused on PID controller, its tuning and usage for self driving car application. Steering and throttle control are performed by separate controllers. Code is written in C++ and utilizes CARLA simulator.
+
+# File structure
+Most relevant files for this project are:
+- pid_controller/pid_controller.cpp 
+    - contains PID controller class, changes in this code were required to complete the project,
+- pid_controller/main.cpp
+    - contains main loop for the simulation, this is the place where the PID controllers are initialized and used, required changes to calculate the errors and call appropriate pid methods,
+
+# How to run
+## Clone the repository
+```
+git clone https://github.com/nikodemj9/nd013-c6-control-starter.git
+```
+
+## Build PID controller
+```
+cd nd013-c6-control-starter/project
+./install-ubuntu.sh
+cd pid_controller/
+rm -rf rpclib
+git clone https://github.com/rpclib/rpclib.git
+mkdir build && cd build
+cmake ..
+make -j8
+```
+
+## Run CARLA simulator:
+```
+/opt/carla-simulator/CarlaUE4.sh -RenderOffScreen
+```
+
+## Run simulation:
+Run CARLA simulator in one terminal window and then run the simulation using below commands in separate terminal:
+```
+cd nd013-c6-control-starter/project
+./run_main_pid.sh
+```
+
+# Results
+View of the simulation after the start:
+![results](project/pid_controller/screenshot/carla_step1.png "results")
+
+Overtaking:
+![results](c6_overtaking.png "results")
+
+
+
+## Plot for steering output and error: 
 ![results](steer_plot.png "results")
 
 We can see that PID controller is able to reduce the error on the steering angle (0-300 s).
 Steering output is not highly affected by big changes in steering error, which allows to keep smooth trajectory. This is something that we would require from self-driving car to keep the ride safe and comfortable for the passengers.
 
 
-Plot for throttle output and error:
+## Plot for throttle output and error:
 ![results](throttle_plot.png "results")
 
 Similar as in the steering PID, the throttle one is also performing as it should and minimize the error between expected and actual velocity. Parameters of the PID are also set up in such way, to keep the smooth experience. No major jumps in throtthle output are visible.
 
-Answers for the project questions:
+## Answers for the project questions:
 * What is the effect of the PID according to the plots, how each part of the PID affects the control command?
     * PID is able to minimize the error between desired and actual velocity / yaw angle of the vehicle by producing control output. Controller parameters can be adjusted to make it behave in required way. For example we might require the that PID controller doesn't overshoot or minimizes the error in limited time. In the project the PID parameters were chosen to keep the drive smooth.
 * What is the effect of the PID according to the plots, how each part of the PID affects the control command?
@@ -23,4 +72,4 @@ Answers for the project questions:
     * Pros: PID controller is relatively light-weight and can be run in real time, which makes it perfect for automotive applications. It's widely known in the industry and can be applied to many different problems, not only steering and throttle control.
     * Cons: PID controller is not able to take into account limitations of the vehicle like min/max acceleration or max steering angle rate. This has to be considered while tuning the parameters. Another problem is that PID tuned for the low speed scenario might not behave correctly for highers speed. For example the steering output might be too aggresive while driving on the highway, causing the significant risk for the passengers.
 * (Optional) What would you do to improve the PID controller?
-    * PID controller in this project should be further tuned to achieve better results. I would also try out scenarios with higher speed and maybe try to distinquish several ranges of speed that would use different parameters.
+    * PID controller in this project should be further tuned to achieve better results. It might also help to execute filter more frequently. I would also try out scenarios with higher speed and maybe try to distinquish several ranges of speed that would use different parameters.
